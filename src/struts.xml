@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!-- 
+		struts运行流程
+		1.请求到达服务器端，由struts的核心控制器做拦截(web.xml中filter)
+		2.核心控制器调用action映射；匹配请求路径与action的映射路径；
+		3.核心控制器配置管理器，配置解析struts.xml，映射路径匹配访问资源；
+		4.action代理调用请求资源
+		5.调用请求资源之前先执行一系列的拦截器，拦截器执行完毕后调用请求资源；
+		6.result结果，根据struts.xml配置文件，匹配返回结果和试图；
+		7.返回之前再一次倒叙执行拦截器；
+		8.返回响应到客户端.
+	 -->
+	 <!-- struts文件书写顺序
+	 	(result-types?,
+	 	interceptors?,
+	 	default-interceptor-ref?,
+	 	default-action-ref?,
+	 	default-class-ref?,
+	 	global-results?,
+	 	global-exception-mappings?,
+	 	action*)"
+	  -->
+	 
+	 <!-- name:包名  -->
+	<package name="defalut" extends="struts-default">
+		<!-- 全局的结果 :当前包下的所有的action生效-->
+		<global-results>
+			<result name="error">jsp/error.jsp</result>
+		</global-results>
+	
+		<!-- name:访问的请求路径  class:方法所在类 -->
+		<!-- name避开关键字 -->
+		<!-- action默认调用execute()方法 -->
+		<action name="demo1" class="com.ysy.factory.Demo1Action">
+			<!-- 匹配调用方法的返回值，如果匹配成功跳转页面 -->
+			<!-- name:与方法的返回值相等 -->
+			<result name="success">jsp/success.jsp</result>
+		</action>
+		
+		<!-- 同一package下，name名称不能一样 -->
+		<!-- method:要调用的方法 -->
+		<action name="demo2" class="com.ysy.factory.Demo2Action" method="method">
+			<result name="success">jsp/success.jsp</result>
+		</action>
+		
+		<!-- 通配符!:action的name名称!方法名.访问后缀 -->
+		<action name="demo3" class="com.ysy.factory.Demo3Action">
+			<result name="success">jsp/success.jsp</result>
+		</action>
+		
+		<!-- 通配符：* {1}:匹配第一个*号内容-->
+		<action name="demo4_*" class="com.ysy.factory.Demo4Action" method="{1}">
+			<result name="success">jsp/success.jsp</result>
+		</action>
+		
+		<!-- 通配符：* {1}:匹配第一个*号内容{2}:匹配第二个*号内容-->
+		<action name="demo5_*_*" class="com.ysy.factory.Demo5Action" method="{1}">
+			<result name="success">jsp/{2}.jsp</result>
+		</action>
+		
+		
+		<action name="demo6" class="com.ysy.factory.Demo6Action">
+			<!-- 当name="success",name可以省略 -->
+			<!-- result对应类中的方法的返回值，有几种返回结果对应几个result -->
+			<!--
+				type:跳转方式 ,默认转发到视图，地址栏不改变，服务器机制 
+				dispatcher:转发到视图
+				redirect重定向到视图
+				chain:转发到action
+				redirectAction:重定向到action
+				json:转发到json
+			-->
+			<result name="success">jsp/success.jsp</result>
+			<result name="test" type="patcher">/jsp/test.jsp</result>
+			<result name="redirect" type="redirect">/jsp/test.jsp</result>
+			<!--跳转到action,跳转的action中!通配符不能使用 ,*可以使用-->
+			<result name="chainAction" type="chain">demo1</result>
+			<result name="redirectAction" type="redirectAction">demo1</result>
+		</action>
+	</package>
+	
+	<!-- 包名不能相同，当多个包下action的name明称相同时 ，必须声明namespace-->
+	<!-- namespace:命名空间,以/开头,默认值/ -->	
+	<!-- 添加namespace之后访问时必须加上namespace的名字:namespace名/action名.访问后缀 -->
+	<!-- 定义namespace之后,result中要加/ -->
+	<package name="action02" extends="struts-default" namespace="/action02">
+		<action name="demo1" class="com.ysy.factory02.Demo1Action">
+			<result>/jsp/success.jsp</result>
+		</action>
+	</package>
+	
+	<package name="action3" extends="struts-default" namespace="/action03">
+		<action name="login" class="com.ysy.factory03.LoginAction">
+			<result>/jsp/success.jsp</result>
+		</action>	
+	</package>
+</struts>    

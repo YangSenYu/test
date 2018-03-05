@@ -1,0 +1,10 @@
+返回结果找不到对应的result配置
+HTTP Status 404 -
+ No result defined for action com.ysy.factory02.Demo1Action and result error
+
+路径错误
+HTTP Status 404 - 
+There is no Action mapped for namespace / and action name test.
+
+action中没有method2()方法
+HTTP Status 500 - com.ysy.factory.Demo1Action.method2()
